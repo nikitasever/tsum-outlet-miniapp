@@ -12,542 +12,131 @@
     --cream: #F7F3EE;
     --warm-white: #FDFAF7;
     --gold: #B8965A;
-    --gold-light: #D4AF7A;
     --charcoal: #1C1C1C;
     --mid-gray: #7A7570;
     --light-gray: #E8E2DA;
     --border: #DDD7CE;
     --red-sale: #C0392B;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; overflow-x: hidden; }
 
-  body {
-    font-family: 'Montserrat', sans-serif;
-    background: var(--cream);
-    color: var(--charcoal);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ── TOP BAR ── */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--warm-white);
-    border-bottom: 1px solid var(--border);
-    padding: 0 16px;
-  }
-  .logo-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 52px;
-  }
-  .logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    color: var(--charcoal);
-    text-transform: uppercase;
-  }
+  .topbar { position: sticky; top: 0; z-index: 100; background: var(--warm-white); border-bottom: 1px solid var(--border); padding: 0 16px; }
+  .logo-row { display: flex; align-items: center; justify-content: space-between; height: 52px; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
   .logo span { color: var(--gold); }
 
-  /* ── SEARCH BAR ── */
-  .search-wrap {
-    padding: 10px 0 12px;
-    position: relative;
-  }
-  .search-wrap input {
-    width: 100%;
-    background: var(--light-gray);
-    border: none;
-    border-radius: 6px;
-    padding: 10px 40px 10px 14px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--charcoal);
-    outline: none;
-    letter-spacing: 0.02em;
-  }
+  .search-wrap { padding: 10px 0 12px; position: relative; }
+  .search-wrap input { width: 100%; background: var(--light-gray); border: none; border-radius: 6px; padding: 10px 40px 10px 14px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--charcoal); outline: none; }
   .search-wrap input::placeholder { color: var(--mid-gray); }
-  .search-icon {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--mid-gray);
-    pointer-events: none;
-    margin-top: 1px;
-  }
+  .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--mid-gray); pointer-events: none; margin-top: 1px; }
 
-  /* ── NAV TABS ── */
-  .nav {
-    display: flex;
-    background: var(--warm-white);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-btn {
-    flex: 1;
-    padding: 10px 4px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--mid-gray);
-    background: none;
-    border: none;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.2s;
-  }
-  .nav-btn.active {
-    color: var(--charcoal);
-    border-bottom-color: var(--gold);
-  }
+  .nav { display: flex; }
+  .nav-btn { flex: 1; padding: 10px 4px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid-gray); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .nav-btn.active { color: var(--charcoal); border-bottom-color: var(--gold); }
 
-  /* ── SCREENS ── */
   .screen { display: none; padding: 16px; }
   .screen.active { display: block; }
 
-  /* ── CATEGORY CHIPS ── */
-  .chips {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 12px;
-    scrollbar-width: none;
-  }
+  .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
   .chips::-webkit-scrollbar { display: none; }
-  .chip {
-    white-space: nowrap;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    border: 1px solid var(--border);
-    background: var(--warm-white);
-    color: var(--charcoal);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .chip.active, .chip:hover {
-    background: var(--charcoal);
-    color: #fff;
-    border-color: var(--charcoal);
-  }
+  .chip { white-space: nowrap; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); background: var(--warm-white); cursor: pointer; transition: all 0.2s; }
+  .chip.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
 
-  /* ── PRODUCT GRID ── */
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-  .card {
-    background: var(--warm-white);
-    border-radius: 8px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    border: 1px solid var(--border);
-    animation: fadeUp 0.35s ease both;
-  }
+  .card { background: var(--warm-white); border-radius: 8px; overflow: hidden; cursor: pointer; border: 1px solid var(--border); animation: fadeUp 0.35s ease both; }
   .card:active { transform: scale(0.97); }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .card-img-wrap {
-    position: relative;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    background: var(--light-gray);
-  }
-  .card-img-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-  }
+  .card-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--light-gray); }
+  .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
   .card:hover .card-img-wrap img { transform: scale(1.04); }
 
-  .discount-badge {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    background: var(--red-sale);
-    color: #fff;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 7px;
-    border-radius: 3px;
-    letter-spacing: 0.03em;
-  }
+  .discount-badge { position: absolute; top: 8px; left: 8px; background: var(--red-sale); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 3px; }
+  .track-btn-card { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; background: rgba(255,255,255,0.88); border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 
-  .track-btn-card {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 30px;
-    height: 30px;
-    background: rgba(255,255,255,0.88);
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    transition: background 0.2s;
-  }
-  .track-btn-card:hover { background: #fff; }
+  .card-body { padding: 10px 10px 12px; }
+  .card-brand { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-name { font-size: 10px; color: var(--mid-gray); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card-prices { display: flex; align-items: baseline; gap: 6px; margin-top: 8px; }
+  .price-new { font-size: 13px; font-weight: 600; }
+  .price-old { font-size: 10px; color: var(--mid-gray); text-decoration: line-through; }
 
-  .card-body {
-    padding: 10px 10px 12px;
-  }
-  .card-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--charcoal);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-name {
-    font-size: 10px;
-    font-weight: 400;
-    color: var(--mid-gray);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    letter-spacing: 0.04em;
-  }
-  .card-prices {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    margin-top: 8px;
-  }
-  .price-new {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--charcoal);
-    letter-spacing: 0.02em;
-  }
-  .price-old {
-    font-size: 10px;
-    font-weight: 400;
-    color: var(--mid-gray);
-    text-decoration: line-through;
-    letter-spacing: 0.02em;
-  }
-
-  /* ── PRODUCT MODAL ── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(28,28,28,0.55);
-    z-index: 200;
-    align-items: flex-end;
-    backdrop-filter: blur(3px);
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(28,28,28,0.55); z-index: 200; align-items: flex-end; backdrop-filter: blur(3px); }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--warm-white);
-    border-radius: 16px 16px 0 0;
-    width: 100%;
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes slideUp {
-    from { transform: translateY(100%); }
-    to   { transform: translateY(0); }
-  }
-  .modal-drag {
-    width: 38px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    margin: 12px auto 0;
-  }
-  .modal-img {
-    width: 100%;
-    aspect-ratio: 3/4;
-    object-fit: cover;
-    background: var(--light-gray);
-  }
+  .modal { background: var(--warm-white); border-radius: 16px 16px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .modal-drag { width: 38px; height: 4px; background: var(--border); border-radius: 2px; margin: 12px auto 0; }
+  .modal-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; background: var(--light-gray); }
   .modal-body { padding: 20px 20px 32px; }
-  .modal-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    line-height: 1.2;
-  }
-  .modal-name {
-    font-size: 13px;
-    font-weight: 400;
-    color: var(--mid-gray);
-    margin-top: 4px;
-    letter-spacing: 0.04em;
-  }
-  .modal-prices {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    margin-top: 16px;
-  }
-  .modal-price-new {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--charcoal);
-  }
-  .modal-price-old {
-    font-size: 16px;
-    color: var(--mid-gray);
-    text-decoration: line-through;
-  }
-  .modal-discount {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--red-sale);
-  }
-  .modal-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 20px 0;
-  }
-  .modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  .btn-primary {
-    width: 100%;
-    padding: 14px;
-    background: var(--charcoal);
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-decoration: none;
-    display: block;
-    text-align: center;
-  }
-  .btn-primary:hover { background: #333; }
-  .btn-secondary {
-    width: 100%;
-    padding: 13px;
-    background: transparent;
-    color: var(--charcoal);
-    border: 1.5px solid var(--charcoal);
-    border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-secondary.tracked {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-  .btn-close-modal {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 32px;
-    height: 32px;
-    background: rgba(255,255,255,0.9);
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--charcoal);
-  }
+  .modal-brand { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; letter-spacing: 0.08em; }
+  .modal-name { font-size: 13px; color: var(--mid-gray); margin-top: 4px; }
+  .modal-prices { display: flex; align-items: baseline; gap: 12px; margin-top: 16px; }
+  .modal-price-new { font-size: 24px; font-weight: 600; }
+  .modal-price-old { font-size: 16px; color: var(--mid-gray); text-decoration: line-through; }
+  .modal-discount { font-size: 13px; font-weight: 600; color: var(--red-sale); }
+  .modal-divider { height: 1px; background: var(--border); margin: 20px 0; }
+  .modal-actions { display: flex; flex-direction: column; gap: 10px; }
 
-  /* ── TRACKED LIST ── */
-  .tracked-item {
-    display: flex;
-    gap: 12px;
-    background: var(--warm-white);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    animation: fadeUp 0.3s ease both;
-  }
-  .tracked-img {
-    width: 72px;
-    height: 96px;
-    object-fit: cover;
-    border-radius: 5px;
-    background: var(--light-gray);
-    flex-shrink: 0;
-  }
+  .btn-primary { width: 100%; padding: 14px; background: var(--charcoal); color: #fff; border: none; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; text-decoration: none; display: block; text-align: center; }
+  .btn-secondary { width: 100%; padding: 13px; background: transparent; color: var(--charcoal); border: 1.5px solid var(--charcoal); border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
+  .btn-secondary.tracked { border-color: var(--gold); color: var(--gold); }
+  .btn-close-modal { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.9); border-radius: 50%; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+
+  .tracked-item { display: flex; gap: 12px; background: var(--warm-white); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; cursor: pointer; animation: fadeUp 0.3s ease both; }
+  .tracked-img { width: 72px; height: 96px; object-fit: cover; border-radius: 5px; background: var(--light-gray); flex-shrink: 0; }
   .tracked-info { flex: 1; min-width: 0; }
-  .tracked-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-  .tracked-name {
-    font-size: 11px;
-    color: var(--mid-gray);
-    margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .tracked-price {
-    font-size: 15px;
-    font-weight: 600;
-    margin-top: 8px;
-  }
-  .tracked-untrack {
-    font-size: 10px;
-    letter-spacing: 0.05em;
-    color: var(--mid-gray);
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 4px 8px;
-    cursor: pointer;
-    margin-top: 8px;
-    font-family: 'Montserrat', sans-serif;
-  }
+  .tracked-brand { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; }
+  .tracked-name { font-size: 11px; color: var(--mid-gray); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tracked-price { font-size: 15px; font-weight: 600; margin-top: 8px; }
+  .tracked-untrack { font-size: 10px; color: var(--mid-gray); background: none; border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; cursor: pointer; margin-top: 8px; font-family: 'Montserrat', sans-serif; }
 
-  /* ── EMPTY STATE ── */
-  .empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--mid-gray);
-  }
+  .section-heading { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 14px; }
+  .section-heading em { font-style: italic; color: var(--gold); }
+  .stats-meta { font-size: 11px; color: var(--mid-gray); margin-bottom: 14px; }
+
+  .empty { text-align: center; padding: 60px 20px; color: var(--mid-gray); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 400;
-    margin-bottom: 6px;
-    color: var(--charcoal);
-  }
+  .empty-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; margin-bottom: 6px; color: var(--charcoal); }
   .empty-text { font-size: 12px; line-height: 1.6; }
 
-  /* ── LOADER ── */
-  .loader {
-    display: flex;
-    justify-content: center;
-    padding: 40px;
-  }
+  .loader { display: flex; justify-content: center; padding: 40px; }
   .loader-dots { display: flex; gap: 6px; }
-  .loader-dots span {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--gold);
-    animation: bounce 1.2s infinite ease-in-out;
-  }
+  .loader-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: bounce 1.2s infinite ease-in-out; }
   .loader-dots span:nth-child(2) { animation-delay: 0.2s; }
   .loader-dots span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; }
-  }
+  @keyframes bounce { 0%,80%,100% { transform: scale(0.7); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
 
-  /* ── SECTION HEADING ── */
-  .section-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 14px;
-    color: var(--charcoal);
-  }
-  .section-heading em {
-    font-style: italic;
-    color: var(--gold);
-  }
-
-  /* ── TOAST ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--charcoal);
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 24px;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    z-index: 500;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    white-space: nowrap;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--charcoal); color: #fff; padding: 10px 20px; border-radius: 24px; font-size: 12px; z-index: 500; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div class="logo-row">
     <div class="logo">TSUM <span>Outlet</span></div>
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B8965A" stroke-width="1.8">
-      <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
-      <line x1="3" y1="6" x2="21" y2="6"/>
-      <path d="M16 10a4 4 0 01-8 0"/>
-    </svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B8965A" stroke-width="1.8"><path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
   </div>
   <div class="search-wrap">
     <input type="text" id="searchInput" placeholder="Поиск: бренд, категория…" autocomplete="off">
-    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-    </svg>
+    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
   </div>
   <div class="nav">
-    <button class="nav-btn active" onclick="switchTab('catalog')">Каталог</button>
-    <button class="nav-btn" onclick="switchTab('search')">Поиск</button>
-    <button class="nav-btn" onclick="switchTab('tracked')">Избранное</button>
+    <button class="nav-btn active" onclick="switchTab('catalog', this)">Каталог</button>
+    <button class="nav-btn" onclick="switchTab('search', this)">Поиск</button>
+    <button class="nav-btn" onclick="switchTab('tracked', this)">Избранное</button>
+    <button class="nav-btn" onclick="switchTab('stats', this)">Статистика</button>
   </div>
 </div>
 
-<!-- CATALOG TAB -->
 <div id="tab-catalog" class="screen active">
   <p class="section-heading">Популярные <em>категории</em></p>
   <div class="chips" id="chips"></div>
   <div id="catalogGrid" class="grid"></div>
 </div>
 
-<!-- SEARCH TAB -->
 <div id="tab-search" class="screen">
   <div id="searchResults">
     <div class="empty">
@@ -558,15 +147,21 @@
   </div>
 </div>
 
-<!-- TRACKED TAB -->
 <div id="tab-tracked" class="screen">
   <p class="section-heading">Избранное</p>
   <div id="trackedList"></div>
 </div>
 
-<!-- PRODUCT MODAL -->
+<div id="tab-stats" class="screen">
+  <p class="section-heading">Топ <em>скидок</em></p>
+  <div id="statsTotal" class="stats-meta"></div>
+  <div id="statsTopDiscount" class="grid"></div>
+  <p class="section-heading" style="margin-top:24px">Снижение <em>цены</em></p>
+  <div id="statsPriceDrops" class="grid"></div>
+</div>
+
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
+  <div class="modal">
     <div class="modal-drag"></div>
     <div style="position:relative">
       <img class="modal-img" id="modalImg" src="" alt="">
@@ -583,7 +178,7 @@
       <div class="modal-divider"></div>
       <div class="modal-actions">
         <a class="btn-primary" id="modalLink" href="#" target="_blank">Открыть на сайте</a>
-        <button class="btn-secondary" id="modalTrackBtn" onclick="toggleTrack()">+ В избранное</button>
+        <button class="btn-secondary" id="modalTrackBtn" onclick="toggleTrack()">♡ В избранное</button>
       </div>
     </div>
   </div>
@@ -595,7 +190,6 @@
 const API = 'https://tsum-outlet-bot-production.up.railway.app';
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
-
 const userId = tg?.initDataUnsafe?.user?.id || 0;
 
 let trackedUrls = new Set();
@@ -603,44 +197,33 @@ let currentProduct = null;
 let searchTimeout = null;
 
 const CATEGORIES = [
-  { title: 'Ремни',      q: 'ремень' },
-  { title: 'Сумки',      q: 'сумка' },
-  { title: 'Обувь',      q: 'туфли' },
-  { title: 'Одежда',     q: 'пальто' },
-  { title: 'Кошельки',   q: 'кошелек' },
-  { title: 'Кроссовки',  q: 'кроссовки' },
-  { title: 'Ювелирка',   q: 'кольцо' },
+  { title: 'Ремни',     q: 'ремень' },
+  { title: 'Сумки',     q: 'сумка' },
+  { title: 'Обувь',     q: 'туфли' },
+  { title: 'Одежда',    q: 'пальто' },
+  { title: 'Кошельки',  q: 'кошелек' },
+  { title: 'Кроссовки', q: 'кроссовки' },
+  { title: 'Ювелирка',  q: 'кольцо' },
 ];
 
-function fmt(n) {
-  return Number(n).toLocaleString('ru-RU') + ' ₽';
-}
-
-function discount(old, nw) {
-  return Math.round((1 - nw / old) * 100);
-}
-
-function loader() {
-  return `<div class="loader"><div class="loader-dots"><span></span><span></span><span></span></div></div>`;
-}
-
+function fmt(n) { return Number(n).toLocaleString('ru-RU') + ' ₽'; }
+function disc(old, nw) { return Math.round((1 - nw / old) * 100); }
+function loader() { return `<div class="loader"><div class="loader-dots"><span></span><span></span><span></span></div></div>`; }
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── TABS ──
-function switchTab(name) {
+function switchTab(name, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (name === 'tracked') loadTracked();
+  if (name === 'stats') loadStats();
 }
 
-// ── CHIPS ──
 function initChips() {
   const wrap = document.getElementById('chips');
   CATEGORIES.forEach((cat, i) => {
@@ -656,37 +239,42 @@ function initChips() {
   });
 }
 
-// ── CATALOG ──
+function saveToCatalog(results) {
+  if (!results?.length) return;
+  fetch(`${API}/api/catalog/save`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(results)
+  }).catch(() => {});
+}
+
 async function loadCatalog(q) {
   const grid = document.getElementById('catalogGrid');
   grid.innerHTML = loader();
   try {
     const res = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&limit=20`);
     const data = await res.json();
-    renderGrid(grid, data.results || []);
+    const results = data.results || [];
+    renderGrid(grid, results);
+    saveToCatalog(results);
   } catch(e) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Не удалось загрузить товары</p></div>`;
   }
 }
 
-// ── RENDER GRID ──
 function renderGrid(container, items) {
   if (!items.length) {
-    container.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div class="empty-icon">🛍️</div>
-      <p class="empty-title">Ничего не найдено</p>
-      <p class="empty-text">Попробуйте другой запрос</p>
-    </div>`;
+    container.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><p class="empty-title">Ничего не найдено</p></div>`;
     return;
   }
   container.innerHTML = items.map((p, i) => {
-    const disc = discount(p.old_price, p.price);
-    const tracked = trackedUrls.has(p.url) ? '♥' : '♡';
-    return `<div class="card" style="animation-delay:${i * 0.04}s" onclick='openModal(${JSON.stringify(JSON.stringify(p))})'>
+    const d = disc(p.old_price, p.price);
+    const heart = trackedUrls.has(p.url) ? '♥' : '♡';
+    return `<div class="card" style="animation-delay:${i*0.04}s" onclick='openModal(${JSON.stringify(JSON.stringify(p))})'>
       <div class="card-img-wrap">
         <img src="${p.image_url}" alt="${p.brand}" loading="lazy" onerror="this.style.opacity=0">
-        ${disc > 0 ? `<span class="discount-badge">-${disc}%</span>` : ''}
-        <button class="track-btn-card" onclick="event.stopPropagation(); quickTrack(${JSON.stringify(JSON.stringify(p))})" data-url="${p.url}">${tracked}</button>
+        ${d > 0 ? `<span class="discount-badge">-${d}%</span>` : ''}
+        <button class="track-btn-card" onclick="event.stopPropagation();quickTrack(${JSON.stringify(JSON.stringify(p))})" data-url="${p.url}">${heart}</button>
       </div>
       <div class="card-body">
         <div class="card-brand">${p.brand}</div>
@@ -700,47 +288,43 @@ function renderGrid(container, items) {
   }).join('');
 }
 
-// ── SEARCH ──
 document.getElementById('searchInput').addEventListener('input', function() {
   const q = this.value.trim();
   clearTimeout(searchTimeout);
   if (!q) return;
-  
-  // Switch to search tab visually if typing
-  const searchTab = document.querySelector('.nav-btn:nth-child(2)');
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-search').classList.add('active');
-  searchTab.classList.add('active');
-
+  document.querySelectorAll('.nav-btn')[1].classList.add('active');
   document.getElementById('searchResults').innerHTML = loader();
   searchTimeout = setTimeout(async () => {
     try {
       const res = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&limit=20`);
       const data = await res.json();
+      const results = data.results || [];
       const wrap = document.getElementById('searchResults');
       wrap.innerHTML = '';
       const grid = document.createElement('div');
       grid.className = 'grid';
       wrap.appendChild(grid);
-      renderGrid(grid, data.results || []);
+      renderGrid(grid, results);
+      saveToCatalog(results);
     } catch(e) {
       document.getElementById('searchResults').innerHTML = `<div class="empty"><p class="empty-text">Ошибка поиска</p></div>`;
     }
   }, 500);
 });
 
-// ── MODAL ──
 function openModal(jsonStr) {
   const p = JSON.parse(jsonStr);
   currentProduct = p;
-  const disc = discount(p.old_price, p.price);
+  const d = disc(p.old_price, p.price);
   document.getElementById('modalImg').src = p.image_url;
   document.getElementById('modalBrand').textContent = p.brand;
   document.getElementById('modalName').textContent = p.name;
   document.getElementById('modalPriceNew').textContent = fmt(p.price);
   document.getElementById('modalPriceOld').textContent = p.old_price > p.price ? fmt(p.old_price) : '';
-  document.getElementById('modalDiscount').textContent = disc > 0 ? `-${disc}%` : '';
+  document.getElementById('modalDiscount').textContent = d > 0 ? `-${d}%` : '';
   document.getElementById('modalLink').href = p.url;
   updateTrackBtn();
   document.getElementById('modalOverlay').classList.add('open');
@@ -750,67 +334,37 @@ function openModal(jsonStr) {
 function updateTrackBtn() {
   const btn = document.getElementById('modalTrackBtn');
   if (trackedUrls.has(currentProduct?.url)) {
-    btn.textContent = '♥ В избранном';
-    btn.classList.add('tracked');
+    btn.textContent = '♥ В избранном'; btn.classList.add('tracked');
   } else {
-    btn.textContent = '♡ В избранное';
-    btn.classList.remove('tracked');
+    btn.textContent = '♡ В избранное'; btn.classList.remove('tracked');
   }
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
-}
-function closeModalDirect() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  if (tg) tg.BackButton.hide();
-}
+function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); if (tg) tg.BackButton.hide(); }
 if (tg) tg.BackButton.onClick(closeModalDirect);
 
-// ── TRACK ──
 async function toggleTrack() {
   if (!currentProduct) return;
   const url = currentProduct.url;
   if (trackedUrls.has(url)) {
-    await untrackProduct(url);
+    await fetch(`${API}/api/untrack?user_id=${userId}&url=${encodeURIComponent(url)}`, {method:'POST'}).catch(()=>{});
     trackedUrls.delete(url);
     showToast('Удалено из избранного');
   } else {
-    await trackProduct(url);
+    await fetch(`${API}/api/track?user_id=${userId}&url=${encodeURIComponent(url)}`, {method:'POST'}).catch(()=>{});
     trackedUrls.add(url);
     showToast('Добавлено в избранное ♥');
   }
   updateTrackBtn();
-  updateCardTrackBtns();
+  document.querySelectorAll('.track-btn-card').forEach(b => { b.textContent = trackedUrls.has(b.dataset.url) ? '♥' : '♡'; });
 }
 
 async function quickTrack(jsonStr) {
-  const p = JSON.parse(jsonStr);
-  currentProduct = p;
-  await toggleTrack();
-  currentProduct = null;
+  const p = JSON.parse(jsonStr); currentProduct = p;
+  await toggleTrack(); currentProduct = null;
 }
 
-function updateCardTrackBtns() {
-  document.querySelectorAll('.track-btn-card').forEach(btn => {
-    const url = btn.dataset.url;
-    btn.textContent = trackedUrls.has(url) ? '♥' : '♡';
-  });
-}
-
-async function trackProduct(url) {
-  try {
-    await fetch(`${API}/api/track?user_id=${userId}&url=${encodeURIComponent(url)}`, { method: 'POST' });
-  } catch(e) {}
-}
-
-async function untrackProduct(url) {
-  try {
-    await fetch(`${API}/api/untrack?user_id=${userId}&url=${encodeURIComponent(url)}`, { method: 'POST' });
-  } catch(e) {}
-}
-
-// ── TRACKED ──
 async function loadTracked() {
   const list = document.getElementById('trackedList');
   list.innerHTML = loader();
@@ -820,59 +374,56 @@ async function loadTracked() {
     const items = data.items || [];
     trackedUrls = new Set(items.map(i => i.url));
     if (!items.length) {
-      list.innerHTML = `<div class="empty">
-        <div class="empty-icon">🤍</div>
-        <p class="empty-title">Список пуст</p>
-        <p class="empty-text">Добавляйте товары в избранное<br>чтобы следить за ценами</p>
-      </div>`;
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🤍</div><p class="empty-title">Список пуст</p><p class="empty-text">Добавляйте товары в избранное<br>чтобы следить за ценами</p></div>`;
       return;
     }
     list.innerHTML = items.map(item => `
       <div class="tracked-item" onclick='openModal(${JSON.stringify(JSON.stringify(item))})'>
-        <img class="tracked-img" src="${item.image_url || ''}" alt="${item.brand || ''}" onerror="this.style.opacity=0">
+        <img class="tracked-img" src="${item.image_url||''}" alt="${item.brand||''}" onerror="this.style.opacity=0">
         <div class="tracked-info">
-          <div class="tracked-brand">${item.brand || ''}</div>
-          <div class="tracked-name">${item.name || ''}</div>
-          <div class="tracked-price">${fmt(item.price || 0)}</div>
-          <button class="tracked-untrack" onclick="event.stopPropagation(); untrackItem('${item.url}', this)">Удалить</button>
+          <div class="tracked-brand">${item.brand||''}</div>
+          <div class="tracked-name">${item.name||''}</div>
+          <div class="tracked-price">${fmt(item.price||0)}</div>
+          <button class="tracked-untrack" onclick="event.stopPropagation();untrackItem('${item.url}',this)">Удалить</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   } catch(e) {
-    list.innerHTML = `<div class="empty"><p class="empty-text">Не удалось загрузить избранное</p></div>`;
+    list.innerHTML = `<div class="empty"><p class="empty-text">Не удалось загрузить</p></div>`;
   }
 }
 
 async function untrackItem(url, btn) {
-  await untrackProduct(url);
+  await fetch(`${API}/api/untrack?user_id=${userId}&url=${encodeURIComponent(url)}`, {method:'POST'}).catch(()=>{});
   trackedUrls.delete(url);
   btn.closest('.tracked-item').remove();
-  updateCardTrackBtns();
   showToast('Удалено из избранного');
   if (!document.querySelectorAll('.tracked-item').length) loadTracked();
 }
 
-// ── INIT ──
-initChips();
-async function loadCatalog(q) {
-  const grid = document.getElementById('catalogGrid');
-  grid.innerHTML = loader();
+async function loadStats() {
+  document.getElementById('statsTopDiscount').innerHTML = loader();
+  document.getElementById('statsPriceDrops').innerHTML = loader();
+  document.getElementById('statsTotal').textContent = '';
   try {
-    const res = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&limit=20`);
+    const res = await fetch(`${API}/api/stats`);
     const data = await res.json();
-    const results = data.results || [];
-    renderGrid(grid, results);
-    // Сохраняем в глобальный каталог
-    if (results.length) {
-      fetch(`${API}/api/catalog/save`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(results)
-      }).catch(() => {});
+    document.getElementById('statsTotal').textContent = `Товаров в базе: ${data.total || 0}`;
+    renderGrid(document.getElementById('statsTopDiscount'), data.top_discount || []);
+    if ((data.price_drops||[]).length) {
+      renderGrid(document.getElementById('statsPriceDrops'), data.price_drops);
+    } else {
+      document.getElementById('statsPriceDrops').innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📊</div><p class="empty-title">Пока нет данных</p><p class="empty-text">Снижения цен появятся<br>после нескольких проверок</p></div>`;
     }
   } catch(e) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Не удалось загрузить товары</p></div>`;
+    document.getElementById('statsTopDiscount').innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
+    document.getElementById('statsPriceDrops').innerHTML = '';
   }
+}
+
+initChips();
+loadCatalog(CATEGORIES[0].q);
+if (userId) {
+  fetch(`${API}/api/tracked/${userId}`).then(r=>r.json()).then(d=>{ trackedUrls = new Set((d.items||[]).map(i=>i.url)); }).catch(()=>{});
 }
 </script>
 </body>
