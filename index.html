@@ -17,6 +17,7 @@
     --light-gray: #E8E2DA;
     --border: #DDD7CE;
     --red-sale: #C0392B;
+    --green: #27AE60;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--charcoal); min-height: 100vh; overflow-x: hidden; }
@@ -31,8 +32,9 @@
   .search-wrap input::placeholder { color: var(--mid-gray); }
   .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--mid-gray); pointer-events: none; margin-top: 1px; }
 
-  .nav { display: flex; }
-  .nav-btn { flex: 1; padding: 10px 4px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid-gray); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; }
+  .nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { flex-shrink: 0; padding: 10px 10px; font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--mid-gray); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
   .nav-btn.active { color: var(--charcoal); border-bottom-color: var(--gold); }
 
   .screen { display: none; padding: 16px; }
@@ -54,6 +56,8 @@
   .card:hover .card-img-wrap img { transform: scale(1.04); }
 
   .discount-badge { position: absolute; top: 8px; left: 8px; background: var(--red-sale); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 3px; }
+  .coming-badge { position: absolute; top: 8px; left: 8px; background: var(--gold); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 3px; }
+  .sold-badge { position: absolute; top: 8px; left: 8px; background: var(--charcoal); color: #fff; font-size: 10px; font-weight: 600; padding: 3px 7px; border-radius: 3px; }
   .track-btn-card { position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; background: rgba(255,255,255,0.88); border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 
   .card-body { padding: 10px 10px 12px; }
@@ -62,7 +66,9 @@
   .card-prices { display: flex; align-items: baseline; gap: 6px; margin-top: 8px; }
   .price-new { font-size: 13px; font-weight: 600; }
   .price-old { font-size: 10px; color: var(--mid-gray); text-decoration: line-through; }
+  .card-stats { font-size: 10px; color: var(--mid-gray); margin-top: 4px; }
 
+  /* MODAL */
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(28,28,28,0.55); z-index: 200; align-items: flex-end; backdrop-filter: blur(3px); }
   .modal-overlay.open { display: flex; }
   .modal { background: var(--warm-white); border-radius: 16px 16px 0 0; width: 100%; max-height: 90vh; overflow-y: auto; animation: slideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -76,14 +82,18 @@
   .modal-price-new { font-size: 24px; font-weight: 600; }
   .modal-price-old { font-size: 16px; color: var(--mid-gray); text-decoration: line-through; }
   .modal-discount { font-size: 13px; font-weight: 600; color: var(--red-sale); }
+  .modal-avail { font-size: 12px; margin-top: 8px; }
+  .modal-avail.yes { color: var(--green); }
+  .modal-avail.no { color: var(--mid-gray); }
+  .modal-avail.soon { color: var(--gold); }
   .modal-divider { height: 1px; background: var(--border); margin: 20px 0; }
   .modal-actions { display: flex; flex-direction: column; gap: 10px; }
-
   .btn-primary { width: 100%; padding: 14px; background: var(--charcoal); color: #fff; border: none; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; text-decoration: none; display: block; text-align: center; }
   .btn-secondary { width: 100%; padding: 13px; background: transparent; color: var(--charcoal); border: 1.5px solid var(--charcoal); border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; }
   .btn-secondary.tracked { border-color: var(--gold); color: var(--gold); }
   .btn-close-modal { position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.9); border-radius: 50%; border: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
 
+  /* TRACKED */
   .tracked-item { display: flex; gap: 12px; background: var(--warm-white); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; cursor: pointer; animation: fadeUp 0.3s ease both; }
   .tracked-img { width: 72px; height: 96px; object-fit: cover; border-radius: 5px; background: var(--light-gray); flex-shrink: 0; }
   .tracked-info { flex: 1; min-width: 0; }
@@ -92,9 +102,24 @@
   .tracked-price { font-size: 15px; font-weight: 600; margin-top: 8px; }
   .tracked-untrack { font-size: 10px; color: var(--mid-gray); background: none; border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; cursor: pointer; margin-top: 8px; font-family: 'Montserrat', sans-serif; }
 
+  /* STATS */
   .section-heading { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; letter-spacing: 0.06em; margin-bottom: 14px; }
   .section-heading em { font-style: italic; color: var(--gold); }
-  .stats-meta { font-size: 11px; color: var(--mid-gray); margin-bottom: 14px; }
+  .stats-meta { font-size: 11px; color: var(--mid-gray); margin-bottom: 16px; }
+
+  /* STAT TABS */
+  .stat-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .stat-tab { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 500; border: 1px solid var(--border); background: var(--warm-white); cursor: pointer; transition: all 0.2s; }
+  .stat-tab.active { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+
+  /* SOLD ITEM */
+  .sold-item { display: flex; gap: 10px; background: var(--warm-white); border: 1px solid var(--border); border-radius: 8px; padding: 10px; margin-bottom: 8px; animation: fadeUp 0.3s ease both; }
+  .sold-img { width: 56px; height: 74px; object-fit: cover; border-radius: 4px; background: var(--light-gray); flex-shrink: 0; }
+  .sold-info { flex: 1; min-width: 0; }
+  .sold-brand { font-family: 'Cormorant Garamond', serif; font-size: 15px; font-weight: 600; }
+  .sold-name { font-size: 10px; color: var(--mid-gray); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sold-price { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .sold-time { font-size: 10px; color: var(--mid-gray); margin-top: 2px; }
 
   .empty { text-align: center; padding: 60px 20px; color: var(--mid-gray); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
@@ -128,15 +153,19 @@
     <button class="nav-btn" onclick="switchTab('search', this)">Поиск</button>
     <button class="nav-btn" onclick="switchTab('tracked', this)">Избранное</button>
     <button class="nav-btn" onclick="switchTab('stats', this)">Статистика</button>
+    <button class="nav-btn" onclick="switchTab('sold', this)">Продажи</button>
+    <button class="nav-btn" onclick="switchTab('coming', this)">Ожидаются</button>
   </div>
 </div>
 
+<!-- CATALOG -->
 <div id="tab-catalog" class="screen active">
   <p class="section-heading">Популярные <em>категории</em></p>
   <div class="chips" id="chips"></div>
   <div id="catalogGrid" class="grid"></div>
 </div>
 
+<!-- SEARCH -->
 <div id="tab-search" class="screen">
   <div id="searchResults">
     <div class="empty">
@@ -147,19 +176,39 @@
   </div>
 </div>
 
+<!-- TRACKED -->
 <div id="tab-tracked" class="screen">
   <p class="section-heading">Избранное</p>
   <div id="trackedList"></div>
 </div>
 
+<!-- STATS -->
 <div id="tab-stats" class="screen">
-  <p class="section-heading">Топ <em>скидок</em></p>
+  <p class="section-heading">Аналитика <em>товаров</em></p>
   <div id="statsTotal" class="stats-meta"></div>
-  <div id="statsTopDiscount" class="grid"></div>
-  <p class="section-heading" style="margin-top:24px">Снижение <em>цены</em></p>
-  <div id="statsPriceDrops" class="grid"></div>
+  <div class="stat-tabs">
+    <button class="stat-tab active" onclick="showStatTab('discount', this)">Топ скидок</button>
+    <button class="stat-tab" onclick="showStatTab('views', this)">Просмотры</button>
+    <button class="stat-tab" onclick="showStatTab('clicks', this)">Клики</button>
+    <button class="stat-tab" onclick="showStatTab('drops', this)">Снижение цен</button>
+  </div>
+  <div id="statsContent" class="grid"></div>
 </div>
 
+<!-- SOLD -->
+<div id="tab-sold" class="screen">
+  <p class="section-heading">Продано <em>сегодня</em></p>
+  <div id="soldMeta" class="stats-meta"></div>
+  <div id="soldList"></div>
+</div>
+
+<!-- COMING SOON -->
+<div id="tab-coming" class="screen">
+  <p class="section-heading">Ожидают <em>поступления</em></p>
+  <div id="comingList" class="grid"></div>
+</div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
   <div class="modal">
     <div class="modal-drag"></div>
@@ -175,9 +224,10 @@
         <span class="modal-price-old" id="modalPriceOld"></span>
         <span class="modal-discount" id="modalDiscount"></span>
       </div>
+      <div class="modal-avail" id="modalAvail"></div>
       <div class="modal-divider"></div>
       <div class="modal-actions">
-        <a class="btn-primary" id="modalLink" href="#" target="_blank">Открыть на сайте</a>
+        <a class="btn-primary" id="modalLink" href="#" target="_blank" onclick="trackEvent('click')">Открыть на сайте</a>
         <button class="btn-secondary" id="modalTrackBtn" onclick="toggleTrack()">♡ В избранное</button>
       </div>
     </div>
@@ -195,6 +245,8 @@ const userId = tg?.initDataUnsafe?.user?.id || 0;
 let trackedUrls = new Set();
 let currentProduct = null;
 let searchTimeout = null;
+let statsData = null;
+let currentStatTab = 'discount';
 
 const CATEGORIES = [
   { title: 'Ремни',     q: 'ремень' },
@@ -208,6 +260,14 @@ const CATEGORIES = [
 
 function fmt(n) { return Number(n).toLocaleString('ru-RU') + ' ₽'; }
 function disc(old, nw) { return Math.round((1 - nw / old) * 100); }
+function timeAgo(ts) {
+  const m = Math.floor((Date.now()/1000 - ts) / 60);
+  if (m < 1) return 'только что';
+  if (m < 60) return `${m} мин назад`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h} ч назад`;
+  return `${Math.floor(h/24)} дн назад`;
+}
 function loader() { return `<div class="loader"><div class="loader-dots"><span></span><span></span><span></span></div></div>`; }
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -215,6 +275,7 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
+// ── TABS ──
 function switchTab(name, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -222,8 +283,11 @@ function switchTab(name, btn) {
   if (btn) btn.classList.add('active');
   if (name === 'tracked') loadTracked();
   if (name === 'stats') loadStats();
+  if (name === 'sold') loadSold();
+  if (name === 'coming') loadComing();
 }
 
+// ── CHIPS ──
 function initChips() {
   const wrap = document.getElementById('chips');
   CATEGORIES.forEach((cat, i) => {
@@ -239,6 +303,16 @@ function initChips() {
   });
 }
 
+// ── EVENTS ──
+function trackEvent(type) {
+  if (!currentProduct) return;
+  fetch(`${API}/api/event`, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ type, url: currentProduct.url, user_id: userId })
+  }).catch(() => {});
+}
+
 function saveToCatalog(results) {
   if (!results?.length) return;
   fetch(`${API}/api/catalog/save`, {
@@ -248,6 +322,7 @@ function saveToCatalog(results) {
   }).catch(() => {});
 }
 
+// ── CATALOG ──
 async function loadCatalog(q) {
   const grid = document.getElementById('catalogGrid');
   grid.innerHTML = loader();
@@ -262,7 +337,8 @@ async function loadCatalog(q) {
   }
 }
 
-function renderGrid(container, items) {
+// ── RENDER GRID ──
+function renderGrid(container, items, opts = {}) {
   if (!items.length) {
     container.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><p class="empty-title">Ничего не найдено</p></div>`;
     return;
@@ -270,24 +346,31 @@ function renderGrid(container, items) {
   container.innerHTML = items.map((p, i) => {
     const d = disc(p.old_price, p.price);
     const heart = trackedUrls.has(p.url) ? '♥' : '♡';
+    let badge = '';
+    if (p.coming_soon) badge = `<span class="coming-badge">Ожидается</span>`;
+    else if (opts.sold) badge = `<span class="sold-badge">Продан</span>`;
+    else if (d > 0) badge = `<span class="discount-badge">-${d}%</span>`;
+    const statsLine = opts.views ? `<div class="card-stats">👁 ${opts.views[p.url] || 0} · 🔗 ${opts.clicks?.[p.url] || 0}</div>` : '';
     return `<div class="card" style="animation-delay:${i*0.04}s" onclick='openModal(${JSON.stringify(JSON.stringify(p))})'>
       <div class="card-img-wrap">
-        <img src="${p.image_url}" alt="${p.brand}" loading="lazy" onerror="this.style.opacity=0">
-        ${d > 0 ? `<span class="discount-badge">-${d}%</span>` : ''}
-        <button class="track-btn-card" onclick="event.stopPropagation();quickTrack(${JSON.stringify(JSON.stringify(p))})" data-url="${p.url}">${heart}</button>
+        <img src="${p.image_url || ''}" alt="${p.brand}" loading="lazy" onerror="this.style.opacity=0">
+        ${badge}
+        ${!opts.sold ? `<button class="track-btn-card" onclick="event.stopPropagation();quickTrack(${JSON.stringify(JSON.stringify(p))})" data-url="${p.url}">${heart}</button>` : ''}
       </div>
       <div class="card-body">
         <div class="card-brand">${p.brand}</div>
         <div class="card-name">${p.name}</div>
         <div class="card-prices">
-          <span class="price-new">${fmt(p.price)}</span>
+          <span class="price-new">${fmt(p.price || 0)}</span>
           ${p.old_price > p.price ? `<span class="price-old">${fmt(p.old_price)}</span>` : ''}
         </div>
+        ${statsLine}
       </div>
     </div>`;
   }).join('');
 }
 
+// ── SEARCH ──
 document.getElementById('searchInput').addEventListener('input', function() {
   const q = this.value.trim();
   clearTimeout(searchTimeout);
@@ -315,20 +398,26 @@ document.getElementById('searchInput').addEventListener('input', function() {
   }, 500);
 });
 
+// ── MODAL ──
 function openModal(jsonStr) {
   const p = JSON.parse(jsonStr);
   currentProduct = p;
   const d = disc(p.old_price, p.price);
-  document.getElementById('modalImg').src = p.image_url;
+  document.getElementById('modalImg').src = p.image_url || '';
   document.getElementById('modalBrand').textContent = p.brand;
   document.getElementById('modalName').textContent = p.name;
-  document.getElementById('modalPriceNew').textContent = fmt(p.price);
+  document.getElementById('modalPriceNew').textContent = fmt(p.price || 0);
   document.getElementById('modalPriceOld').textContent = p.old_price > p.price ? fmt(p.old_price) : '';
   document.getElementById('modalDiscount').textContent = d > 0 ? `-${d}%` : '';
   document.getElementById('modalLink').href = p.url;
+  const avail = document.getElementById('modalAvail');
+  if (p.coming_soon) { avail.textContent = '⏳ Ожидается поступление'; avail.className = 'modal-avail soon'; }
+  else if (p.available === false) { avail.textContent = '🔴 Нет в наличии'; avail.className = 'modal-avail no'; }
+  else { avail.textContent = '🟢 В наличии'; avail.className = 'modal-avail yes'; }
   updateTrackBtn();
   document.getElementById('modalOverlay').classList.add('open');
   if (tg) tg.BackButton.show();
+  trackEvent('view');
 }
 
 function updateTrackBtn() {
@@ -339,11 +428,11 @@ function updateTrackBtn() {
     btn.textContent = '♡ В избранное'; btn.classList.remove('tracked');
   }
 }
-
 function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
 function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); if (tg) tg.BackButton.hide(); }
 if (tg) tg.BackButton.onClick(closeModalDirect);
 
+// ── TRACK ──
 async function toggleTrack() {
   if (!currentProduct) return;
   const url = currentProduct.url;
@@ -355,6 +444,7 @@ async function toggleTrack() {
     await fetch(`${API}/api/track?user_id=${userId}&url=${encodeURIComponent(url)}`, {method:'POST'}).catch(()=>{});
     trackedUrls.add(url);
     showToast('Добавлено в избранное ♥');
+    trackEvent('favorite');
   }
   updateTrackBtn();
   document.querySelectorAll('.track-btn-card').forEach(b => { b.textContent = trackedUrls.has(b.dataset.url) ? '♥' : '♡'; });
@@ -365,6 +455,7 @@ async function quickTrack(jsonStr) {
   await toggleTrack(); currentProduct = null;
 }
 
+// ── TRACKED ──
 async function loadTracked() {
   const list = document.getElementById('trackedList');
   list.innerHTML = loader();
@@ -400,26 +491,105 @@ async function untrackItem(url, btn) {
   if (!document.querySelectorAll('.tracked-item').length) loadTracked();
 }
 
+// ── STATS ──
 async function loadStats() {
-  document.getElementById('statsTopDiscount').innerHTML = loader();
-  document.getElementById('statsPriceDrops').innerHTML = loader();
-  document.getElementById('statsTotal').textContent = '';
+  if (statsData) { renderStatTab(currentStatTab); return; }
+  document.getElementById('statsContent').innerHTML = loader();
   try {
     const res = await fetch(`${API}/api/stats`);
-    const data = await res.json();
-    document.getElementById('statsTotal').textContent = `Товаров в базе: ${data.total || 0}`;
-    renderGrid(document.getElementById('statsTopDiscount'), data.top_discount || []);
-    if ((data.price_drops||[]).length) {
-      renderGrid(document.getElementById('statsPriceDrops'), data.price_drops);
-    } else {
-      document.getElementById('statsPriceDrops').innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📊</div><p class="empty-title">Пока нет данных</p><p class="empty-text">Снижения цен появятся<br>после нескольких проверок</p></div>`;
-    }
+    statsData = await res.json();
+    document.getElementById('statsTotal').textContent = `Товаров в базе: ${statsData.total || 0}`;
+    renderStatTab(currentStatTab);
   } catch(e) {
-    document.getElementById('statsTopDiscount').innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
-    document.getElementById('statsPriceDrops').innerHTML = '';
+    document.getElementById('statsContent').innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
   }
 }
 
+function showStatTab(tab, btn) {
+  currentStatTab = tab;
+  document.querySelectorAll('.stat-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (statsData) renderStatTab(tab);
+}
+
+function renderStatTab(tab) {
+  const container = document.getElementById('statsContent');
+  if (tab === 'discount') {
+    renderGrid(container, statsData.top_discount || []);
+  } else if (tab === 'views') {
+    const items = (statsData.top_views || []).map(i => i.product);
+    const views = Object.fromEntries((statsData.top_views || []).map(i => [i.product.url, i.views]));
+    if (!items.length) {
+      container.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">👁</div><p class="empty-title">Пока нет данных</p><p class="empty-text">Просмотры появятся после<br>открытия карточек товаров</p></div>`;
+    } else {
+      renderGrid(container, items, { views });
+    }
+  } else if (tab === 'clicks') {
+    const items = (statsData.top_clicks || []).map(i => i.product);
+    const clicks = Object.fromEntries((statsData.top_clicks || []).map(i => [i.product.url, i.clicks]));
+    if (!items.length) {
+      container.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔗</div><p class="empty-title">Пока нет данных</p><p class="empty-text">Клики появятся после<br>перехода на сайт</p></div>`;
+    } else {
+      renderGrid(container, items, { clicks });
+    }
+  } else if (tab === 'drops') {
+    if (!(statsData.price_drops || []).length) {
+      container.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">📉</div><p class="empty-title">Пока нет данных</p><p class="empty-text">Снижения появятся<br>после нескольких проверок</p></div>`;
+    } else {
+      renderGrid(container, statsData.price_drops);
+    }
+  }
+}
+
+// ── SOLD ──
+async function loadSold() {
+  const list = document.getElementById('soldList');
+  list.innerHTML = loader();
+  try {
+    const res = await fetch(`${API}/api/sold`);
+    const data = await res.json();
+    const items = data.items || [];
+    document.getElementById('soldMeta').textContent = `Продано за 24 часа: ${data.count || 0} товаров`;
+    if (!items.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🏷</div><p class="empty-title">Нет данных</p><p class="empty-text">Проданные товары появятся<br>по мере накопления данных</p></div>`;
+      return;
+    }
+    list.innerHTML = items.reverse().map((s, i) => {
+      const p = s.product || {};
+      return `<div class="sold-item" style="animation-delay:${i*0.04}s" onclick='openModal(${JSON.stringify(JSON.stringify(p))})'>
+        <img class="sold-img" src="${p.image_url||''}" alt="${p.brand||''}" onerror="this.style.opacity=0">
+        <div class="sold-info">
+          <div class="sold-brand">${p.brand||'—'}</div>
+          <div class="sold-name">${p.name||'—'}</div>
+          <div class="sold-price">${fmt(p.price||0)}</div>
+          <div class="sold-time">${timeAgo(s.ts)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty"><p class="empty-text">Ошибка загрузки</p></div>`;
+  }
+}
+
+// ── COMING SOON ──
+async function loadComing() {
+  const grid = document.getElementById('comingList');
+  grid.innerHTML = loader();
+  try {
+    const res = await fetch(`${API}/api/coming_soon`);
+    const data = await res.json();
+    const items = data.items || [];
+    if (!items.length) {
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⏳</div><p class="empty-title">Список пуст</p><p class="empty-text">Товары в ожидании поступления<br>появятся здесь автоматически</p></div>`;
+      return;
+    }
+    renderGrid(grid, items);
+  } catch(e) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
+  }
+}
+
+// ── INIT ──
 initChips();
 loadCatalog(CATEGORIES[0].q);
 if (userId) {
