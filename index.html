@@ -854,12 +854,25 @@ async function untrackItem(url, btn) {
 
 // ── INIT ──
 initChips();
-loadCatalog(CATEGORIES[0].q);
-if (userId) {
-  fetch(`${API}/api/tracked/${userId}`)
-    .then(r => r.json())
-    .then(d => { trackedUrls = new Set((d.items || []).map(i => i.url)); })
-    .catch(() => {});
+async function loadCatalog(q) {
+  const grid = document.getElementById('catalogGrid');
+  grid.innerHTML = loader();
+  try {
+    const res = await fetch(`${API}/api/search?q=${encodeURIComponent(q)}&limit=20`);
+    const data = await res.json();
+    const results = data.results || [];
+    renderGrid(grid, results);
+    // Сохраняем в глобальный каталог
+    if (results.length) {
+      fetch(`${API}/api/catalog/save`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(results)
+      }).catch(() => {});
+    }
+  } catch(e) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Не удалось загрузить товары</p></div>`;
+  }
 }
 </script>
 </body>
