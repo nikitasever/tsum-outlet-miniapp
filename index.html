@@ -155,6 +155,7 @@
     <button class="nav-btn" onclick="switchTab('stats', this)">Статистика</button>
     <button class="nav-btn" onclick="switchTab('hot', this)">🔥 Горячие</button>
     <button class="nav-btn" onclick="switchTab('sold', this)">Продажи</button>
+    <button class="nav-btn" onclick="switchTab('history', this)">История</button>
     <button class="nav-btn" onclick="switchTab('coming', this)">Ожидаются</button>
   </div>
 </div>
@@ -219,6 +220,13 @@
 <div id="tab-coming" class="screen">
   <p class="section-heading">Ожидают <em>поступления</em></p>
   <div id="comingList" class="grid"></div>
+</div>
+
+<!-- HISTORY -->
+<div id="tab-history" class="screen">
+  <p class="section-heading">Проданные <em>ранее</em></p>
+  <div id="historyMeta" class="stats-meta"></div>
+  <div id="historyList"></div>
 </div>
 
 <!-- MODAL -->
@@ -299,6 +307,7 @@ function switchTab(name, btn) {
   if (name === 'sold') loadSold();
   if (name === 'coming') loadComing();
   if (name === 'hot') loadHot(24);
+  if (name === 'history') loadHistory();
 }
 
 // ── CHIPS ──
@@ -585,6 +594,50 @@ async function loadSold() {
           <div>${badge}</div>
           <div class="sold-price">${fmt(p.price||0)}</div>
           <div class="sold-time">${timeAgo(s.ts)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty"><p class="empty-text">Ошибка загрузки</p></div>`;
+  }
+}
+
+// ── HISTORY ──
+async function loadHistory() {
+  const list = document.getElementById('historyList');
+  const meta = document.getElementById('historyMeta');
+  list.innerHTML = loader();
+  try {
+    const res  = await fetch(`${API}/api/sold/history?limit=100`);
+    const data = await res.json();
+    const items = data.items || [];
+
+    if (!items.length) {
+      meta.textContent = '';
+      list.innerHTML = `<div class="empty">
+        <div class="empty-icon">📦</div>
+        <p class="empty-title">Пока пусто</p>
+        <p class="empty-text">Исторически проданные товары появятся<br>после первого ночного сканирования</p>
+      </div>`;
+      return;
+    }
+
+    meta.textContent = `Найдено ${data.count} проданных товаров из поисковых индексов`;
+
+    list.innerHTML = items.map((item, i) => {
+      const url  = item.url || '';
+      const slug = item.slug || url.split('/').pop() || '';
+      const name = slug.replace(/-/g, ' ');
+      return `<div class="sold-item" style="animation-delay:${i*0.03}s">
+        <div class="sold-img" style="background:#f0ebe3;display:flex;align-items:center;justify-content:center;font-size:22px">📦</div>
+        <div class="sold-info">
+          <div class="sold-brand" style="font-size:12px;word-break:break-all">${name}</div>
+          <div style="margin-top:4px">
+            <span style="background:#2c2c2c;color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px">ПРОДАН</span>
+          </div>
+          <div class="sold-time" style="margin-top:4px">
+            <a href="${url}" target="_blank" style="color:#b5a642;font-size:10px">Открыть страницу →</a>
+          </div>
         </div>
       </div>`;
     }).join('');
