@@ -153,6 +153,7 @@
     <button class="nav-btn" onclick="switchTab('search', this)">Поиск</button>
     <button class="nav-btn" onclick="switchTab('tracked', this)">Избранное</button>
     <button class="nav-btn" onclick="switchTab('stats', this)">Статистика</button>
+    <button class="nav-btn" onclick="switchTab('hot', this)">🔥 Горячие</button>
     <button class="nav-btn" onclick="switchTab('sold', this)">Продажи</button>
     <button class="nav-btn" onclick="switchTab('coming', this)">Ожидаются</button>
   </div>
@@ -200,6 +201,18 @@
   <p class="section-heading">Продано <em>сегодня</em></p>
   <div id="soldMeta" class="stats-meta"></div>
   <div id="soldList"></div>
+</div>
+
+<!-- HOT -->
+<div id="tab-hot" class="screen">
+  <p class="section-heading">🔥 Быстро <em>раскупают</em></p>
+  <div id="hotMeta" class="stats-meta"></div>
+  <div class="chips" id="hotChips" style="margin-bottom:12px">
+    <button class="chip active" onclick="loadHot(24,this)">24 часа</button>
+    <button class="chip" onclick="loadHot(6,this)">6 часов</button>
+    <button class="chip" onclick="loadHot(1,this)">1 час</button>
+  </div>
+  <div id="hotList"></div>
 </div>
 
 <!-- COMING SOON -->
@@ -285,6 +298,7 @@ function switchTab(name, btn) {
   if (name === 'stats') loadStats();
   if (name === 'sold') loadSold();
   if (name === 'coming') loadComing();
+  if (name === 'hot') loadHot(24);
 }
 
 // ── CHIPS ──
@@ -594,6 +608,68 @@ async function loadComing() {
     renderGrid(grid, items);
   } catch(e) {
     grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
+  }
+}
+
+// ── HOT ITEMS ──
+async function loadHot(hours, chipBtn) {
+  const list = document.getElementById('hotList');
+  const meta = document.getElementById('hotMeta');
+  list.innerHTML = loader();
+
+  // Update active chip
+  if (chipBtn) {
+    document.querySelectorAll('#hotChips .chip').forEach(c => c.classList.remove('active'));
+    chipBtn.classList.add('active');
+  }
+
+  try {
+    const res = await fetch(`${API}/api/hot?hours=${hours}&limit=30`);
+    const data = await res.json();
+    const items = data.items || [];
+
+    if (!items.length) {
+      meta.textContent = '';
+      list.innerHTML = `<div class="empty">
+        <div class="empty-icon">🔥</div>
+        <p class="empty-title">Данных пока нет</p>
+        <p class="empty-text">Нужно минимум 2 скана (≈30 мин)<br>чтобы увидеть динамику продаж</p>
+      </div>`;
+      return;
+    }
+
+    meta.textContent = `${items.length} товаров раскупались за последние ${hours} ч`;
+
+    list.innerHTML = items.map((item, i) => {
+      const p = item.product || {};
+      const sold = item.total_sold;
+      const vel = item.velocity;
+      const rem = item.remaining;
+      const velStr = vel >= 1
+        ? `${vel.toFixed(1)} шт/час`
+        : `${(vel * 60).toFixed(0)} шт/час`;
+
+      const remStr = rem !== null && rem !== undefined
+        ? `осталось ${rem} шт`
+        : '';
+
+      const urgency = rem !== null && rem <= 3 ? '🚨' : sold >= 5 ? '🔥' : '📈';
+
+      return `<div class="sold-item" style="animation-delay:${i*0.03}s" onclick='openModal(${JSON.stringify(JSON.stringify(p))})'>
+        <img class="sold-img" src="${p.image_url||''}" alt="" onerror="this.style.opacity=0">
+        <div class="sold-info">
+          <div class="sold-brand">${urgency} ${p.brand||'—'}</div>
+          <div class="sold-name">${p.name||'—'}</div>
+          <div style="margin-top:5px;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="background:#c41e3a;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:3px">−${sold} шт за ${hours}ч</span>
+            ${remStr ? `<span style="background:#f5f0e8;color:#555;font-size:9px;font-weight:600;padding:2px 7px;border-radius:3px">${remStr}</span>` : ''}
+          </div>
+          <div class="sold-price">${fmt(p.price||0)}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    list.innerHTML = `<div class="empty"><p class="empty-text">Ошибка загрузки</p></div>`;
   }
 }
 
