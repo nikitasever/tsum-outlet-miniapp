@@ -689,17 +689,22 @@ async function loadComing() {
   const count = document.getElementById('comingCount');
   grid.innerHTML = loader();
   try {
-    const res = await fetch(`${API}/api/coming_soon`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+    const res = await fetch(`${API}/api/coming_soon`, { signal: controller.signal });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     _comingItems = data.items || [];
     if (!_comingItems.length) {
       if (count) count.textContent = '';
-      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⏳</div><p class="empty-title">Список пуст</p><p class="empty-text">Товары в ожидании поступления<br>появятся здесь автоматически</p></div>`;
+      grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">⏳</div><p class="empty-title">Список пуст</p><p class="empty-text">Товары в ожидании поступления<br>появятся после следующего скана</p></div>`;
       return;
     }
     renderComingItems(_comingItems);
   } catch(e) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">Ошибка загрузки</p></div>`;
+    const msg = e.name === 'AbortError' ? 'Превышено время ожидания' : 'Ошибка загрузки';
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p class="empty-text">${msg} — попробуйте снова</p><button onclick="loadComing()" style="margin-top:12px;padding:8px 20px;background:var(--charcoal);color:#fff;border:none;border-radius:4px;font-size:12px;cursor:pointer">Повторить</button></div>`;
   }
 }
 
